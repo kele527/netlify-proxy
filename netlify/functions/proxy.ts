@@ -61,6 +61,7 @@ export default async (request: Request, context: Context) => {
   searchParams.forEach((value, key) => {
     url.searchParams.append(key, value);
   });
+  console.log("request.headers", request.headers);
 
   const headers = pickHeaders(request.headers, [
     "content-type",
