@@ -3,6 +3,7 @@ import { Context } from "@netlify/edge-functions";
 const pickHeaders = (headers: Headers, keys: (string | RegExp)[]): Headers => {
   const picked = new Headers();
   for (const key of headers.keys()) {
+    //不知道groq的请求头都是啥，这里感觉没有必要过滤，所以注释掉
     // if (keys.some((k) => (typeof k === "string" ? k === key : k.test(key)))) {
     const value = headers.get(key);
     if (typeof value === "string") {
