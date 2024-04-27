@@ -20,7 +20,6 @@ const CORS_HEADERS: Record<string, string> = {
 };
 
 export default async (request: Request, context: Context) => {
-
   if (request.method === "OPTIONS") {
     return new Response(null, {
       headers: CORS_HEADERS,
@@ -28,7 +27,7 @@ export default async (request: Request, context: Context) => {
   }
 
   const { pathname, searchParams } = new URL(request.url);
-  if(pathname === "/") {
+  if (pathname === "/") {
     let blank_html = `
 <!DOCTYPE html>
 <html>
@@ -47,39 +46,39 @@ export default async (request: Request, context: Context) => {
   <p>For technical discussions, please visit <a href="https://simonmy.com/posts/使用netlify反向代理google-palm-api.html">https://simonmy.com/posts/使用netlify反向代理google-palm-api.html</a></p>
 </body>
 </html>
-    `
+    `;
     return new Response(blank_html, {
       headers: {
         ...CORS_HEADERS,
-        "content-type": "text/html"
+        "content-type": "text/html",
       },
     });
   }
 
-  const url = new URL(pathname, "https://generativelanguage.googleapis.com");
+  const url = new URL(pathname, "https://api.groq.com");
   searchParams.delete("_path");
 
   searchParams.forEach((value, key) => {
     url.searchParams.append(key, value);
   });
 
-  const headers = pickHeaders(request.headers, ["content-type", "x-goog-api-client", "x-goog-api-key", "accept-encoding"]);
+  const headers = pickHeaders(request.headers, ["content-type", "accept-encoding"]);
 
   const response = await fetch(url, {
     body: request.body,
     method: request.method,
-    duplex: 'half',
+    duplex: "half",
     headers,
   });
 
   const responseHeaders = {
     ...CORS_HEADERS,
     ...Object.fromEntries(response.headers),
-    "content-encoding": null
+    "content-encoding": null,
   };
 
   return new Response(response.body, {
     headers: responseHeaders,
-    status: response.status
+    status: response.status,
   });
 };
